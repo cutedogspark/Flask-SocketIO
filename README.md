@@ -12,4 +12,6 @@ deactivate
 pip install --upgrade pip   
 pip install flask-socketio   
 pip install gevent-websocket   
+pip install flask   
+pip install socketIO-client   
 
