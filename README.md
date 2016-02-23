@@ -1,14 +1,15 @@
 # Flask-SocketIO
 
-<<create>>
-virtualenv --no-site-packages  env
-cd env
-source env/bin/activate
+create virtual env
+$virtualenv --no-site-packages  env
+$cd env
+$source env/bin/activate
 
-<<exit>>
-deactivate
+exit env
+$deactivate
 
-pip install --upgrade pip
-pip install flask-socketio
-pip install gevent-websocket
+install 
+$pip install --upgrade pip
+$pip install flask-socketio
+$pip install gevent-websocket
 
