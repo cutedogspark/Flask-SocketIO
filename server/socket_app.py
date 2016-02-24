@@ -78,4 +78,4 @@ def test_disconnect():
     print('Client disconnected', request.sid)
 
 if __name__ == '__main__':
-    socketio.run(flask_app,debug = True)
+    socketio.run(flask_app,host='0.0.0.0',debug = True)

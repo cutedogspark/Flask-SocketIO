@@ -19,6 +19,7 @@
 	pip install flask   
 	pip install socketIO-client   
 	pip install flask-debugtoolbar
+	pip install flask_restful
 ``` 
 
 ##test 
