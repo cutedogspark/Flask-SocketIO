@@ -1,13 +1,6 @@
 from flask import Flask , render_template
 from flask_restful import Resource, Api
-
-# setting flask config
-flask_app = Flask(__name__)
-# the toolbar is only enabled in debug mode:
-flask_app.debug = True
-# set a 'SECRET_KEY' to enable the Flask session cookies
-flask_app.config['SECRET_KEY'] = 'development key'
-
+from . import flask_app
 # restful API
 api = Api(flask_app)
 
@@ -24,7 +17,7 @@ class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
 
-api.add_resource(HelloWorld, '/')
+api.add_resource(HelloWorld, '/api')
 
 #local test python flask_app.py
 if __name__ == '__main__':

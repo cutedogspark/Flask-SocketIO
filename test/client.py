@@ -11,7 +11,7 @@ if len(sys.argv) < 2:
 	host = 'localhost'
 else:
 	host = sys.argv[1]
-
+# socketIO = SocketIO(host, 5603, LoggingNamespace)
 socketIO = SocketIO(host, 5000, LoggingNamespace)
 print 'socketIO init done'
 socketIO.on('connect', on_connect)

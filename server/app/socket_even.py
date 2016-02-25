@@ -1,14 +1,9 @@
-from flask_app import flask_app
-
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 
-async_mode = 'gevent'
-from gevent import monkey
-monkey.patch_all()
-print('async_mode is ' + async_mode)
-socketio = SocketIO(flask_app, async_mode=async_mode)
+from . import socketio
 
 @socketio.on('my event', namespace='/test')
 def test_message(message):
