@@ -1,18 +1,72 @@
-from socketIO_client import SocketIO, LoggingNamespace
+# -*- coding: utf-8 -*-
+from socketIO_client import SocketIO, LoggingNamespace, BaseNamespace 
+import sys
 
 import logging
-logging.getLogger('requests').setLevel(logging.WARNING)
+# logging.getLogger('requests').setLevel(logging.WARNING)
 logging.basicConfig(level=logging.DEBUG)
 
-def on_connect():
-    print "on_connect()"
-# socketIO = SocketIO('172.17.34.14', 5603, LoggingNamespace)
-# socketIO = SocketIO('172.17.34.14', 5000, LoggingNamespace)
+# select host or remote server
+if len(sys.argv) < 2:
+	host = 'localhost'
+else:
+	host = sys.argv[1]
+# set sub namespace
+Namespace = '/oceanktv'
 
-socketIO = SocketIO('localhost', 5000, LoggingNamespace)
-print 'socketIO init done'
-socketIO.on('connect', on_connect)
+class Main(LoggingNamespace):
+	_connected = True
+	def initialize(self):
+		print '(GY) Main initialize'
+	
+	def on_connect(self):
+		print '(GY) Main On connect'
+	
+	def on_disconnect(self):
+		print('(GY) Main on_disconnect')
 
-socketIO.wait(seconds=3)
-print 'exit'
-a
+class Oceanktv(LoggingNamespace):
+    def initialize(self):
+    	print('(GY) Oceanktv initialize')
+        self.called_on_disconnect = False
+        self.args_by_event = {}
+        self.response = None
+
+    def on_disconnect(self):
+    	print('(GY) Oceanktv on_disconnect')
+        self.called_on_disconnect = True
+
+    def on_wait_with_disconnect_response(self):
+    	print('(GY) Oceanktv on_wait_with_disconnect_response')
+        self.disconnect()
+
+    def on_event(self, event, *args):
+    	print('(GY) Oceanktv on_event')
+        callback, args = find_callback(args)
+        if callback:
+            callback(*args)
+        self.args_by_event[event] = args
+
+    def on_message(self, data):
+    	print('(GY) Oceanktv on_message')
+        self.response = data
+
+	def on_change(self, change):
+		print('(GY) on change')
+
+    def on_connect(self):
+        self.emit('my broadcast event', {'data': 'Hi, I am python client emit(on_connect even), Can you here me ?'} ) 
+
+    def on_my_response(self, *args):
+        print('(GY) on_my_response', args)
+
+if __name__ == '__main__':
+	print '(GY) connect ....%s' % host
+	socketIO = SocketIO(host, 5603, Main)
+	print '(GY) socketIO define Namespace in Oceanktv'
+	oceanktv_namespace = socketIO.define(Oceanktv,Namespace)
+	while (1):
+		oceanktv_namespace.emit('my broadcast event', {'data': 'I am python client...broadcast emit '} ) 
+		socketIO.wait(seconds=1)
+		pass
+	print 'exit'

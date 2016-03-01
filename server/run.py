@@ -6,4 +6,5 @@ from app import flask_app
 from app import socketio
 
 if __name__ == '__main__':
-	socketio.run(flask_app,host='0.0.0.0',debug = True)
+	socketio.run(flask_app,host='0.0.0.0',port=5603,debug = True)
+
