@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from socketIO_client import SocketIO, LoggingNamespace, BaseNamespace 
+from socketIO_client import SocketIO, LoggingNamespace, BaseNamespace
 import sys
 
 import logging
@@ -7,10 +7,13 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 # select host or remote server
-if len(sys.argv) < 2:
+if len(sys.argv) < 3:
 	host = 'localhost'
+	#8001(node),5000(flask-socketio),5603(ktv)
+	port = 5603
 else:
 	host = sys.argv[1]
+	port = sys.argv[2]
 # set sub namespace
 Namespace = '/oceanktv'
 
@@ -18,10 +21,10 @@ class Main(LoggingNamespace):
 	_connected = True
 	def initialize(self):
 		print '(GY) Main initialize'
-	
+
 	def on_connect(self):
 		print '(GY) Main On connect'
-	
+
 	def on_disconnect(self):
 		print('(GY) Main on_disconnect')
 
@@ -55,18 +58,18 @@ class Oceanktv(LoggingNamespace):
 		print('(GY) on change')
 
     def on_connect(self):
-        self.emit('my broadcast event', {'data': 'Hi, I am python client emit(on_connect even), Can you here me ?'} ) 
+        self.emit('my broadcast event', {'data': 'Hi, I am python client emit(on_connect even), Can you here me ?'} )
 
     def on_my_response(self, *args):
         print('(GY) on_my_response', args)
 
 if __name__ == '__main__':
-	print '(GY) connect ....%s' % host
-	socketIO = SocketIO(host, 5603, Main)
+	print '(GY) connect ....%s %s' % (host, port)
+	socketIO = SocketIO(host, int(port), Main)
 	print '(GY) socketIO define Namespace in Oceanktv'
 	oceanktv_namespace = socketIO.define(Oceanktv,Namespace)
 	while (1):
-		oceanktv_namespace.emit('my broadcast event', {'data': 'I am python client...broadcast emit '} ) 
+		oceanktv_namespace.emit('my broadcast event', {'data': 'I am python client...broadcast emit '} )
 		socketIO.wait(seconds=1)
 		pass
 	print 'exit'
