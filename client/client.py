@@ -15,11 +15,12 @@ else:
 	host = sys.argv[1]
 	port = sys.argv[2]
 # set sub namespace
-Namespace = '/oceanktv'
+Namespace = '/test'
 
 class Main(LoggingNamespace):
-	_connected = True
+	# _connected = True
 	def initialize(self):
+		self._connected = True
 		print '(GY) Main initialize'
 
 	def on_connect(self):
@@ -28,7 +29,7 @@ class Main(LoggingNamespace):
 	def on_disconnect(self):
 		print('(GY) Main on_disconnect')
 
-class Oceanktv(LoggingNamespace):
+class ktv(LoggingNamespace):
     def initialize(self):
     	print('(GY) Oceanktv initialize')
         self.called_on_disconnect = False
@@ -36,22 +37,23 @@ class Oceanktv(LoggingNamespace):
         self.response = None
 
     def on_disconnect(self):
-    	print('(GY) Oceanktv on_disconnect')
+    	print('(GY) on_disconnect')
         self.called_on_disconnect = True
 
     def on_wait_with_disconnect_response(self):
-    	print('(GY) Oceanktv on_wait_with_disconnect_response')
+    	print('(GY) on_wait_with_disconnect_response')
         self.disconnect()
 
     def on_event(self, event, *args):
-    	print('(GY) Oceanktv on_event')
-        callback, args = find_callback(args)
-        if callback:
-            callback(*args)
-        self.args_by_event[event] = args
+    	# print('(GY)  on_event')
+		print '(GY) even:[%s], data:[%s] ' % (event, args)
+        # callback, args = find_callback(args)
+        # if callback:
+        #     callback(*args)
+        # self.args_by_event[event] = args
 
     def on_message(self, data):
-    	print('(GY) Oceanktv on_message')
+    	print('(GY)  on_message')
         self.response = data
 
 	def on_change(self, change):
@@ -60,16 +62,26 @@ class Oceanktv(LoggingNamespace):
     def on_connect(self):
         self.emit('my broadcast event', {'data': 'Hi, I am python client emit(on_connect even), Can you here me ?'} )
 
+	def on_playlist_change(self, *args):
+		print('(GY) on_my_response', args)
+
     def on_my_response(self, *args):
         print('(GY) on_my_response', args)
+
+    def on_test(self, *args):
+		print('@@(GY) on_test', args)
+		self.emit('my broadcast event', {'data': '@Hi, I am python client emit(on_test even), Can you here me ?'} )
 
 if __name__ == '__main__':
 	print '(GY) connect ....%s %s' % (host, port)
 	socketIO = SocketIO(host, int(port), Main)
-	print '(GY) socketIO define Namespace in Oceanktv'
-	oceanktv_namespace = socketIO.define(Oceanktv,Namespace)
+	print '(GY) socketIO define Namespace in ktv'
+	oceanktv_namespace = socketIO.define(ktv,Namespace)
 	while (1):
-		oceanktv_namespace.emit('my broadcast event', {'data': 'I am python client...broadcast emit '} )
+		oceanktv_namespace.emit('generic.broadcast', {'data': 'I am python client...broadcast emit '} )
+		socketIO.wait(seconds=1)
+		# oceanktv_namespace.emit('playlist.change', {'data': {'count': 1, 'data': {'action': 'add', 'display_message': u'\u6d6a\u4eba\u60c5\u6b4c(MPEG2)', 'total_current': 2, 'total_finished': 0}}} )
 		socketIO.wait(seconds=1)
 		pass
+
 	print 'exit'
