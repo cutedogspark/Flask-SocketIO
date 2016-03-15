@@ -15,7 +15,7 @@ def test_message(message):
     emit('my response2',
          {'data': message['data'], 'count': session['receive_count']}, broadcast=True)
 
-@socketio.on('my broadcast event', namespace='/oceanktv')
+@socketio.on('my broadcast event', Namespace)
 def test_broadcast_message(message):
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
