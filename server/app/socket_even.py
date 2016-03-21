@@ -22,7 +22,6 @@ def test_broadcast_message(message):
          {'data': message['data'], 'count': session['receive_count']},
          broadcast=True)
 
-
 @socketio.on('join', Namespace)
 def join(message):
     join_room(message['room'])
