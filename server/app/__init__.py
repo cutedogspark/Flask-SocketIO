@@ -6,7 +6,7 @@ flask_app = Flask(__name__)
 # the toolbar is only enabled in debug mode:
 flask_app.debug = True
 # set a 'SECRET_KEY' to enable the Flask session cookies
-flask_app.config['SECRET_KEY'] = 'zxcv'
+flask_app.config['SECRET_KEY'] = 'secret'
 
 socketio = SocketIO(flask_app, async_mode='gevent')
 
